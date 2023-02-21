@@ -256,7 +256,7 @@ create table facturas (
 
 -- show tables
 
--- describe database
+-- describe database 
 
 
 
