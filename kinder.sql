@@ -44,6 +44,17 @@ create table administradores (
 
 
 /*-------------------------------------------------------------------------------------------
+ 						Tabla tipo_documento
+ -------------------------------------------------------------------------------------------*/
+drop table if exists tipo_documento;
+create table tipo_documento (
+  id int not null auto_increment,
+  nombre varchar(50) not null,
+  descripcion varchar(60) not null,
+  primary key (id)
+);
+
+/*-------------------------------------------------------------------------------------------
  						Tablas relacionadas con representantes 
  -------------------------------------------------------------------------------------------*/
 
@@ -70,7 +81,6 @@ create table informacion_representante (
   
   
   /*informacion adicional */
-  parentesco varchar(30)not null,
   estado_civil varchar(20) not null,
   etnia varchar(30) not null,
   nivel_formacion varchar (100)not null,
@@ -82,11 +92,11 @@ create table informacion_representante (
   
   pais_nacimiento varchar(50) not null,
   provincia_nacimiento varchar(50) not null,
-  canton_nacimiento varchar(50) not null,
+  ciudad_nacimiento varchar(50) not null,
   
   pais_residencia varchar(50) not null,
   provincia_residencia varchar(50) not null,
-  canton_residencia varchar(50) not null,
+  ciudad_residencia varchar(50) not null,
   
   direccion_domicilio varchar(120)not null,
   
@@ -113,8 +123,10 @@ create table documentos_representante (
     nombre_documento varchar(100) not null,
     url_documento varchar(255) not null,
     fecha_creacion datetime not null,
+    id_tipo_documento int not null,
     primary key (id),
-    foreign key (id_representante) references representantes(id)
+    foreign key (id_representante) references representantes(id),
+    foreign key (id_tipo_documento)references tipo_documento(id)
 );
 
 
@@ -130,11 +142,20 @@ create table estudiantes (
   apellidos varchar(50) not null,
   genero enum('m','f') not null,
   fecha_nacimiento date not null,
-  id_representante int not null,
-  primary key (id),
-  foreign key (id_representante) references representantes(id)
+  primary key (id)
 );
 
+
+drop table if exists representante_estudiante;
+create table representante_estudiante (
+  id int not null auto_increment,
+  id_estudiante int not null,
+  id_representante int not null,
+  parentesco varchar(30)not null,
+  primary key (id),
+  foreign key (id_estudiante) references estudiantes(id),
+  foreign key (id_representante) references representantes(id)
+);
 
 
 drop table if exists informacion_estudiante;
@@ -153,11 +174,11 @@ create table informacion_estudiante (
   
   pais_nacimiento varchar(50) not null,
   provincia_nacimiento varchar(50) not null,
-  canton_nacimiento varchar(50) not null,
+  ciudad_nacimiento varchar(50) not null,
   
   pais_residencia varchar(50) not null,
   provincia_residencia varchar(50) not null,
-  canton_residencia varchar(50) not null,
+  ciudad_residencia varchar(50) not null,
   
   direccion_domicilio varchar(120)not null,
   
@@ -185,8 +206,11 @@ create table documentos_estudiante (
     nombre_documento varchar(100) not null,
     url_documento varchar(255) not null,
     fecha_creacion datetime not null,
+    id_tipo_documento int not null,
+    
     primary key (id),
-    foreign key (id_estudiante) references estudiantes(id)
+    foreign key (id_estudiante) references estudiantes(id),
+    foreign key (id_tipo_documento)references tipo_documento(id)
 );
 
 
@@ -234,11 +258,11 @@ create table informacion_maestro (
   
   pais_nacimiento varchar(50) not null,
   provincia_nacimiento varchar(50) not null,
-  canton_nacimiento varchar(50) not null,
+  ciudad_nacimiento varchar(50) not null,
   
   pais_residencia varchar(50) not null,
   provincia_residencia varchar(50) not null,
-  canton_residencia varchar(50) not null,
+  ciudad_residencia varchar(50) not null,
   
   direccion_domicilio varchar(120)not null,
   
@@ -266,8 +290,11 @@ create table documentos_maestro (
     nombre_documento varchar(100) not null,
     url_documento varchar(255) not null,
     fecha_creacion datetime not null,
+    id_tipo_documento int not null,
+    
     primary key (id),
-    foreign key (id_maestro) references maestros(id)
+    foreign key (id_maestro) references maestros(id),
+    foreign key (id_tipo_documento)references tipo_documento(id)
 );
 
 
@@ -334,8 +361,11 @@ create table documentos_matricula (
     nombre_documento varchar(100) not null,
     url_documento varchar(255) not null,
     fecha_creacion datetime not null,
+    id_tipo_documento int not null,
+   	
     primary key (id),
-    foreign key (id_matricula) references matriculas(id)
+    foreign key (id_matricula) references matriculas(id),
+    foreign key (id_tipo_documento)references tipo_documento(id)
 );
 
 
@@ -362,9 +392,11 @@ create table asignaturas (
   id int not null auto_increment,
   curso_id int not null,
   materia_id int not null,
+  id_periodo_lectivo int not null,
   primary key (id),
   foreign key (curso_id) references cursos(id),
-  foreign key (materia_id) references materias(id)
+  foreign key (materia_id) references materias(id),
+  foreign key (id_periodo_lectivo) references periodo_lectivo(id)
 );
 
 
@@ -468,7 +500,22 @@ create table facturas (
 
 
 
---show tables;
+/*show tables;*/
+
+
+ /*selecciona los procedures*/
+ /*
+	 select routine_name
+	 from information_schema.routines
+	 where routine_type = 'procedure'
+	 and routine_schema like 'kinder' 
+	 and (routine_name like 'agregar%'
+	 or routine_name like 'listar%'
+	 or routine_name like 'actualizar%' 
+	 or routine_name like 'eliminar%');
+*/
+
+
 
 
 
